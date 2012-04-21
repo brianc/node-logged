@@ -11,7 +11,7 @@ var log = require('logged')();
 log.debug('test');
 ```
 
-What you should see on stdout: `{"level":0,"message":"test","date":"2012-04-21T09:37:47.373Z"}`
+What you should see on stderr: `{"level":0,"message":"test","date":"2012-04-21T09:37:47.373Z"}`
 
 ### named logger
 
@@ -20,7 +20,7 @@ var log = require('logged')('my-logger');
 log.debug('test');
 ```
 
-What you should see on stdout: `{"level":0,"message":"test","name":"my-logger","date":"2012-04-21T09:37:47.373Z"}`
+What you should see on stderr: `{"level":0,"message":"test","name":"my-logger","date":"2012-04-21T09:37:47.373Z"}`
 
 ### log with more context
 
@@ -29,7 +29,7 @@ var log = require('logged')({name: 'my-logger', env: 'production'});
 log.debug('test', {user: 'joe'});
 ```
 
-What you should see on stdout: `{"level":0,"message":"test","name":"my-logger","date":"2012-04-21T09:37:47.373Z","env":"production","user":"joe"}`
+What you should see on stderr: `{"level":0,"message":"test","name":"my-logger","date":"2012-04-21T09:37:47.373Z","env":"production","user":"joe"}`
 
 ## customizable
 
