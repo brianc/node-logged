@@ -1,4 +1,5 @@
 var logged = require(__dirname + '/../lib');
+logged.on("log", function() { /* don't write to stderr during tests*/ });
 
 describe("logged()", function() {
   it("it creates a logger", function() {
@@ -10,10 +11,6 @@ describe("logged()", function() {
     logged.setLevel(logged.level.debug);
     var log = logged();
     log.level.should.eql(logged.level.debug);
-
-    logged.setLevel(logged.level.info);
-    var log = logged();
-    log.level.should.eql(logged.level.info);
   });
 
   describe("called with string parameter", function() {
@@ -42,27 +39,59 @@ describe("logger", function() {
     log.error("okay");
   });
 
-  describe("when levels are enabled", function() {
-    logged.setLevel(logged.level.debug);
+  it("emits message", function(done){
     var log = logged({name: 'test', time: 'late'});
-    it("emits message", function(done){
-      log.on("log", function(msg) {
-        msg.name.should.eql("test");
-        msg.time.should.eql("late");
-        msg.message.should.eql("test");
-        msg.user.should.eql("brianc");
-        msg.date.getYear().should.eql(new Date().getYear());
-        msg.level.should.eql(logged.level.debug);
-        done();
-      });
-      log.debug("test", {user: 'brianc'});
+    log.level = logged.level.debug;
+    log.once("log", function(msg) {
+      msg.name.should.eql("test");
+      msg.time.should.eql("late");
+      msg.message.should.eql("test");
+      msg.user.should.eql("brianc");
+      msg.date.getYear().should.eql(new Date().getYear());
+      msg.level.should.eql(logged.level.debug);
+      done();
     });
-
-    it('logged emits the message', function(done) {
-      logged.on('log', function(msg){
-        done();
-      });
-      logged().info('okay');
-    });
+    log.debug("test", {user: 'brianc'});
   });
+
+  var shouldEmit = function(levels) {
+    levels.forEach(function(level) {
+      it('emits ' + level + ' message', function(done) {
+        var message = 'test ' + level + ' message';
+        logged.once('log', function(msg){
+          msg.level.should.eql(logged.level[level]);
+          msg.message.should.eql(message);
+          done();
+        });
+        logged()[level](message);
+      });
+    });
+  };
+
+  var shouldNotEmit = function(levels) {
+    levels.forEach(function(level) {
+      it('does not emit ' + level + ' message', function(done) {
+        logged.once(level, function() {
+          done('Should not have emitted ' + level);
+        });
+        logged()[level]('test');
+        process.nextTick(done);
+      });
+    });
+  };
+
+  var levels = [];
+  for(var level in logged.level) { levels.push(level) }
+
+  for(var level in logged.level) {
+    describe('when ' + level + ' is enabled', function() {
+      logged.setLevel(logged.level[level]);
+      shouldNotEmit(levels.filter(function(l) {
+        return logged.level[l] < logged.level[level];
+      }));
+      shouldEmit(levels.filter(function(l) {
+        return logged.level[l] >= logged.level[level];
+      }));
+    });
+  }
 });
