@@ -1,0 +1,25 @@
+{
+  "author": "Brian Carlson <brian.m.carlson@gmail.com> (http://enginode.com)",
+  "name": "logged",
+  "description": "json logging to stdout",
+  "version": "0.2.0",
+  "homepage": "https://github.com/brianc/logged",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/brianc/logged.git"
+  },
+  "main": "lib/",
+  "scripts": {
+    "test": "node_modules/.bin/mocha -r should"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "mocha": "*",
+    "should": "*"
+  },
+  "optionalDependencies": {},
+  "engines": {
+    "node": "*"
+  }
+}
