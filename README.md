@@ -1,6 +1,7 @@
 # logged
 Logging should be simple. This library is 80 lines of code. It gets the job done. Simply.
 
+[![Build Status](https://secure.travis-ci.org/brianc/node-logged.png?branch=master)](http://travis-ci.org/brianc/node-logged)
 
 ## examples
 
